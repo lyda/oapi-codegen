@@ -67,7 +67,14 @@ func (p *PetStore) AddPet(ctx context.Context, request AddPetRequestObject) (Add
 
 	// We handle pets, not NewPets, which have an additional ID field
 	var pet Pet
-	pet.Name = request.Body.Name
+
+	if name, ok := request.Body.Name.AsNewPetName0(); ok == nil {
+		fmt.Printf("AsNewPetName0: %s\n", name)
+		pet.Name.FromPetName0(name)
+	} else if num, ok := request.Body.Name.AsNewPetName1(); ok == nil {
+		fmt.Printf("AsNewPetName1: %d\n", num)
+		pet.Name.FromPetName1(num)
+	}
 	pet.Tag = request.Body.Tag
 	pet.Id = p.NextId
 	p.NextId++
